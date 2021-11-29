@@ -4,6 +4,8 @@ const { check, validationResult } = require('express-validator/check');
 var timediff = require('timediff');
 
 const auth = require('../../middleware/auth')
+
+
 const User = require('../../models/User');
 const Appointment = require('../../models/Appointment');
 const Store = require('../../models/Store');

@@ -27,7 +27,7 @@ app.use('/api/auth/', require('./routes/api/auth'));
 
 
 
-console.log("reached Before Static assests");
+console.log("Crossed routes & at Statics assignment");
 
 //Underneat APIs: Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
