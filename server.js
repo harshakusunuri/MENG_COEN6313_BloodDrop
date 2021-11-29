@@ -22,7 +22,6 @@ console.log("reached Routes");
 app.use('/api/users/', require('./routes/api/users'));
 // app.use('/api/organizations/', require('./routes/api/organizations'));
 // app.use('/api/admin/', require('./routes/api/admin'));
-
 app.use('/api/auth/', require('./routes/api/auth'));
 
 

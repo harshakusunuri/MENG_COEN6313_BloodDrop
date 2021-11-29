@@ -378,14 +378,15 @@ button {
 .landing {
   position: relative;
   background: url('./img/showcase.jpg') no-repeat center center/cover;
-  height: 100vh;
+  height: 90vh;
+  width: 73vw;
 }
 
 .landing-inner {
   color: #fff;
-  height: 100%;
-  width: 80%;
-  margin: 200px;
+  height: 95%;
+  width: 70%;
+  margin: 140px;
   display: flex;
   flex-direction: column;
   align-items: center;

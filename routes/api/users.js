@@ -701,6 +701,11 @@ router.post('/donor/updateMyRequestList', auth, async (req, res) => {
             myReq.updatedBy = updatedBy;
             myReq.updatedDate = updatedDate;
             response = await myReq.save();
+            // appointment = new Appointment({
+            //     createdByUser: req.user.id, location, donationDate, bloodGroup, status, hospital
+            // });
+            // response = await appointment.save();
+            res.json({ response });
             res.json(response);
         } else {
             res.status(400).json({ errors: [{ msg: 'No requests found!' }] });
