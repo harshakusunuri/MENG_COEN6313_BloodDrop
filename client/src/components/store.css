@@ -1,0 +1,26 @@
+.dFlex {
+    display: flex;
+    border: 1px solid grey;
+}
+
+.inlineFlex {
+    border-right: 1px solid grey;
+    margin-right:4px;
+    padding:0px 4px;
+}
+
+.spacing {
+    padding: 0px 4px;
+}
+
+.mini-container {
+    margin:20px 40px;
+}
+
+.flex {
+    width:100px;
+    display: flex;
+    justify-content: space-between;
+
+}
+

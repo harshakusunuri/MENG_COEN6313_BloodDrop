@@ -1,0 +1,16 @@
+// {
+//     "USER_TYPE": "USER_TYPE",
+//     "USER_TYPE_USER": "USER_TYPE_USER",
+//     "USER_TYPE_ORGANIZATION":"USER_TYPE_ORGANIZATION",
+//     "USER_TYPE_ADMIN":"USER_TYPE_ADMIN"
+
+
+
+// }
+
+
+// export const USER_TYPE = 'USER_TYPE';
+// export const USER_TYPE_USER = 'USER_TYPE_USER';
+// export const USER_TYPE_ORGANIZATION = 'USER_TYPE_ORGANIZATION';
+
+// export const USER_TYPE_ADMIN = 'USER_TYPE_ADMIN';

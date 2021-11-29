@@ -1,0 +1,25 @@
+.card {
+    border: 1px solid grey;
+    width:600px;
+    margin: 0 auto;
+}
+
+.heading {
+    margin-left:100px;
+    margin-top: 10px;
+}
+
+.form-group {
+    margin-top: 10px;
+}
+
+.saveBtn {
+    border-radius:10px;
+    margin-left:40px;
+    margin-bottom: 14px;
+}
+
+.description-field {
+    display: flex;
+    flex-direction: column;
+}
