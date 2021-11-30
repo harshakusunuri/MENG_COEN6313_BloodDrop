@@ -713,25 +713,30 @@ router.post('/donor/updateMyRequestList', auth, async (req, res) => {
         if (myReq != null) {
             let responseApt = {};
             if ((status == "CONFIRM") || (status == "DECLINE")) {
+
+                myReq.status = status; // "status": "PENDING",//CONFIRM OR DECLINE
                 if (status == "CONFIRM") {
-                    myReq.status = status; // "status": "PENDING",//CONFIRM OR DECLINE
                     appointment = new Appointment({
                         createdByUser: req.user.id, location: myReq.location, donationDate: myReq.donationDate, bloodGroup: myReq.bloodGroup, status, hospital: myReq.hospital
                     });
                     responseApt = await appointment.save();
                 }
+                myReq.description = description;
+                myReq.updatedBy = updatedBy;
+                myReq.updatedDate = updatedDate;
+                let response = {}
+                response = await myReq.save();
+                // appointment = new Appointment({
+                //     createdByUser: req.user.id, location: myReq.location, donationDate: myReq.donationDate, bloodGroup: myReq.bloodGroup, status, hospital: myReq.hospital
+                // });
+                // responseApt = await appointment.save();
+                // res.json({ myReq });
+                res.json({ response, responseApt });
 
+            } else {
+                res.status(400).json({ errors: [{ msg: 'invalid details' }] });
             }
-            myReq.description = description;
-            myReq.updatedBy = updatedBy;
-            myReq.updatedDate = updatedDate;
-            response = await myReq.save();
-            appointment = new Appointment({
-                createdByUser: req.user.id, location: myReq.location, donationDate: myReq.donationDate, bloodGroup: myReq.bloodGroup, status, hospital: myReq.hospital
-            });
-            responseApt = await appointment.save();
-            // res.json({ myReq });
-            res.json({ response, responseApt });
+
         } else {
             res.status(400).json({ errors: [{ msg: 'No requests found!' }] });
         }

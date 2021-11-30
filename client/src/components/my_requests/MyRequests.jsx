@@ -16,22 +16,22 @@ const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, hist
     const [status, setStatus] = useState('')
     const [description, setDescription] = useState('')
     const [modal, setModal] = useState(false);
-    function sleep(ms) {
-        return new Promise(
-            resolve => setTimeout(resolve, ms)
-        );
-    }
+    // function sleep(ms) {
+    //     return new Promise(
+    //         resolve => setTimeout(resolve, ms)
+    //     );
+    // }
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            history.push('/');
+        // if (!isAuthenticated) {
+        //     history.push('/');
 
-        } else {
-            const data = {}
-            data.userRequestType = 'DONOR_BLOOD_REQ'
-            data.status = 'PENDING'
-            actionFetch(data)
-        }
+        // } else {
+        const data = {}
+        data.userRequestType = 'DONOR_BLOOD_REQ'
+        data.status = 'PENDING'
+        actionFetch(data)
+        // }
     }, [])
 
     const editStatus = (item) => {
@@ -51,19 +51,19 @@ const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, hist
         setDescription(e.target.value);
     }
 
-    const editMyRequest = () => {
+    const editMyRequest = async () => {
         const data = {}
         data.id = selected._id;
         data.status = status.value;
         data.description = description;
-        actionEdit(data)
-        setModal(false)
+        await actionEdit(data);
+        setModal(false);
         // var delayInMilliseconds = 1000;
         // // setTimeout(function () {
         // //     //your code to be executed after 1 second
         // // }, delayInMilliseconds);
 
-        actionFetch(data)
+        await actionFetch(data);
 
     }
 
