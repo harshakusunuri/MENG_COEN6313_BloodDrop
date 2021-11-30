@@ -97,7 +97,7 @@ const StoreDonar = ({ actionSave, donorData, actionFetch }) => {
             </Link>
             <h3 className="heading">Donor requests</h3>
 
-            <Table bordered>
+            <Table bordered style={{ 'max-width': '100%', 'border-collapse': 'collapse', 'table-layout': 'fixed', 'word-wrap': 'break-word' }}>
                 <thead>
                     <tr>
                         <th>

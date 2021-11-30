@@ -45,7 +45,7 @@ class StorePage extends Component {
     }
 
 
-    saveNewRequest = () => {
+    saveNewRequest = async () => {
         const {
             location,
             bloodGroup,
@@ -57,8 +57,8 @@ class StorePage extends Component {
         data.location = location.value;
         data.bloodGroup = bloodGroup.value;
         data.userRequestType = userRequestType;
-        actionSave(data);
-        actionFetch(data);
+        await actionSave(data);
+        await actionFetch(data);
         this.setState({ modal: false })
     }
 
@@ -97,7 +97,7 @@ class StorePage extends Component {
                         </Link>
                     </span>
                 </div>
-                <Table bordered className="my-4">
+                <Table bordered className="my-4" >
                     <thead>
                         <tr>
                             <th>

@@ -54,6 +54,7 @@ const StoreAdmin = ({ actionSave, history }) => {
         data.description = description
         data.donationDate = moment().format('YYYY-MM-DD');//DonationDate
         actionSave(data)
+        history.push("/store");
     }
     const Close = () => {
         history.push("/store");

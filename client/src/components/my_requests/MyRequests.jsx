@@ -73,8 +73,8 @@ const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, hist
             <Link to='/donorAppointmentPage' >
                 Back to Donor Page </Link>
 
-            <Table bordered>
-                <thead>
+            <Table bordered style={{ 'max-width': '100%', 'border-collapse': 'collapse', 'table-layout': 'fixed', 'word-wrap': 'break-word' }}>
+                <thead style={{ 'text-align': 'center', 'border-collapse': 'collapse', 'padding': '5px', 'border': 'solid 1px' }}>
                     <tr>
                         <th>
                             id
@@ -88,13 +88,14 @@ const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, hist
                         <th>Created By</th>
                         <th>Description</th>
                         <th>Created Date</th>
+                        <th>Donor email</th>
                         <th>Update option for Blood Donations</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.length && data.map((item, index) => (
                         <tr>
-                            <td>
+                            <td style={{}}>
                                 {index + 1}
                             </td>
                             <td>{item.location} </td>
@@ -102,10 +103,16 @@ const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, hist
                             <td>{item.bloodGroup} </td>
                             <td>{item.status}
                             </td>
-                            <td>{item.userRequestType} </td>
-                            <td>{item.createdByUser.email} </td>
+                            <td style={{}}>{item.userRequestType} </td>
+                            <td style={{}}>{item.createdByUser.email} </td>
                             <td>{item.description} </td>
                             <td>{item.createdDate.slice(0, 10)} </td>
+                            <td>{item.userRequestType === 'DONOR_BLOOD_REQ' ?
+
+                                item.reqToUser.email
+
+                                :
+                                ''}</td>
                             <td>
                                 {item.status === 'PENDING' && (item.createdByUser._id != user._id) ?
                                     <>

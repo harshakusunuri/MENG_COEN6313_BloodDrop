@@ -96,14 +96,14 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
         console.log(donationDate);
     }
 
-    const saveAppointment = () => {
+    const saveAppointment = async () => {
 
-        updateAppointmentSlot({
+        await updateAppointmentSlot({
             location: location1.value, donationDate: donationDateUser, bloodGroup: defaultBloodGroup[0].value
         });
         setModal(false)
-        getAppointmentsLog();
-        getAppointmentslots({ location: locationUser, donationDate: donationDateUser, bloodGroup: bloodGroupUser });
+        await getAppointmentsLog();
+        await getAppointmentslots({ location: locationUser, donationDate: donationDateUser, bloodGroup: bloodGroupUser });
         // console.log(location, donationDate, bloodGroup)
     }
 
@@ -164,7 +164,7 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
     </div> */}
 
 
-                    <div style={{ fontWeight: "bold" }}>Available slots for {donationDateUser} : {appointmentslots ? (appointmentslots.remainingAppointmentSlots >= 1 ? appointmentslots.remainingAppointmentSlots + " Slots" : "NOT AVAILABLE") : []}</div>
+                    <div style={{ fontWeight: "bold" }}>Available slots for {donationDateUser} {appointmentslots ? (appointmentslots.remainingAppointmentSlots >= 1 ? " at " + appointmentslots.location + " : " + appointmentslots.remainingAppointmentSlots + " Slots" : "NOT AVAILABLE") : []}</div>
                 </div>
 
 
@@ -223,6 +223,7 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
                             <th>status</th>
                             <th>donationDate</th>
                             <th>createdDate </th>
+                            <th>createdBy </th>
                             <th>hospital</th>
                         </tr>
                     </thead>
@@ -238,6 +239,7 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
                                 <td>{appointmentsLog2.status}</td>
                                 <td>{appointmentsLog2.donationDate.slice(0, 10)}</td>
                                 <td>{appointmentsLog2.createdDate.slice(0, 10)}</td>
+                                <td>{appointmentsLog2.createdByUser.email}</td>
                                 <td>{appointmentsLog2.hospital}</td>
 
 
@@ -260,7 +262,7 @@ DonorAppointmentPage.propTypes = {
     getAppointmentsLog: PropTypes.func.isRequired,
     appointmentsLog: PropTypes.array.isRequired,
     getAppointmentslots: PropTypes.func.isRequired,
-    appointmentslots: PropTypes.array.isRequired
+    appointmentslots: PropTypes.object.isRequired
 
 
 };

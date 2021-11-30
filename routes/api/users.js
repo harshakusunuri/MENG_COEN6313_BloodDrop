@@ -241,7 +241,19 @@ router.post('/donor/getAppointmentslog', auth,
         const user = await User.findById(req.user.id);
 
         try {
-            let appointmentsLog = await Appointment.find({ createdByUser: user.id }).populate({ path: 'createdByUser', select: 'name email' }).sort('-createdDate');
+
+
+            const createdByUser = user.id;
+            // const userRequestType = "DONOR_BLOOD_REQ";    search: , userRequestType 
+            // const reqToUser = user.id; //Will hold Id.
+            // const status = "PENDING"; Search: , status 
+            userType = user.userType;
+            let appointmentsLog = [];
+            if (userType == "ADMIN") {
+                appointmentsLog = await Appointment.find().populate({ path: 'createdByUser', select: 'name email' }).sort('-createdDate'); // $or: [{ createdByUser }, { reqToUser }, { userRequestType: "REQ_TO_ADMIN" }] }
+            } else {
+                appointmentsLog = await Appointment.find({ createdByUser: user.id }).populate({ path: 'createdByUser', select: 'name email' }).sort('-createdDate');
+            }
             // let store = await Store.findOne({ location });
             // donationSlots = store.donationSlots;
 
@@ -662,7 +674,7 @@ router.post('/donor/getMyRequestList', auth, async (req, res) => {
         // const status = "PENDING"; Search: , status 
         userType = user.userType;
         if (userType == "ADMIN") {
-            myReqs = await MyReq.find({ $or: [{ createdByUser }, { reqToUser }, { userRequestType: "REQ_TO_ADMIN" }] }).populate({ path: 'createdByUser', select: 'name email' }).populate({ path: 'reqToUser', select: 'name email' }).sort('-createdDate');
+            myReqs = await MyReq.find().populate({ path: 'createdByUser', select: 'name email' }).populate({ path: 'reqToUser', select: 'name email' }).sort('-createdDate'); // $or: [{ createdByUser }, { reqToUser }, { userRequestType: "REQ_TO_ADMIN" }] }
         } else {
 
 
@@ -701,11 +713,14 @@ router.post('/donor/updateMyRequestList', auth, async (req, res) => {
         if (myReq != null) {
             let responseApt = {};
             if ((status == "CONFIRM") || (status == "DECLINE")) {
-                myReq.status = status; // "status": "PENDING",//CONFIRM OR DECLINE
-                appointment = new Appointment({
-                    createdByUser: req.user.id, location: myReq.location, donationDate: myReq.donationDate, bloodGroup: myReq.bloodGroup, status, hospital: myReq.hospital
-                });
-                responseApt = await appointment.save();
+                if (status == "CONFIRM") {
+                    myReq.status = status; // "status": "PENDING",//CONFIRM OR DECLINE
+                    appointment = new Appointment({
+                        createdByUser: req.user.id, location: myReq.location, donationDate: myReq.donationDate, bloodGroup: myReq.bloodGroup, status, hospital: myReq.hospital
+                    });
+                    responseApt = await appointment.save();
+                }
+
             }
             myReq.description = description;
             myReq.updatedBy = updatedBy;
