@@ -3,18 +3,35 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Table, Modal, Button } from 'react-bootstrap';
 import Select from 'react-select';
+import DatePicker from 'react-datepicker'
 import { Link, Navigate, Redirect } from 'react-router-dom'
 import { setAlert } from '../actions/alert'
 import { getAppointmentsLog, getAppointmentslots } from '../actions/auth'
 
 
-const DonorAppointmentPage = ({ setAlert,appointmentslots, isAuthenticated, user, history, getAppointmentsLog, appointmentsLog, getAppointmentslots, loading }) => {
-    
+const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, user, history, getAppointmentsLog, appointmentsLog, getAppointmentslots, loading }) => {
+    const locationOptions = [
+        { value: 'MONTREAL', label: 'MONTREAL' },
+        { value: 'OTTAWA', label: 'OTTAWA' },
+    ]
+
     const [formData, setFormData] = useState({
         location: '',
         donationDate: '',
         bloodGroup: ''
     })
+    
+        const bloodGroupOptions = [
+        { value: 'A+', label: 'A+' },
+        { value: 'A-', label: 'A-' },
+        { value: 'B+', label: 'B+' },
+        { value: 'B-', label: 'B-' },
+        { value: 'AB+', label: 'AB+' },
+        { value: 'AB-', label: 'AB-' },
+        { value: 'O+', label: 'O+' },
+        { value: 'O-', label: 'O-' }
+    ]
+    const [startDate, setStartDate] = useState(new Date());
     const [modal, setModal] = useState(false);
     const [editModel, setEditmodel] = useState(false)
     const { location, donationDate, bloodGroup } = formData;
@@ -24,6 +41,8 @@ const DonorAppointmentPage = ({ setAlert,appointmentslots, isAuthenticated, user
 
     useEffect(() => {
         if (!isAuthenticated) {
+            history.push('/');
+
         } else {
 
             var locationUser = user.location;
@@ -52,7 +71,7 @@ const DonorAppointmentPage = ({ setAlert,appointmentslots, isAuthenticated, user
         e.preventDefault()
         setEditmodel(false)
     }
-    
+
     const newAppointment = () => {
         setModal(true)
     }
@@ -63,84 +82,97 @@ const DonorAppointmentPage = ({ setAlert,appointmentslots, isAuthenticated, user
 
     return (
         <Fragment>
-                <div>
-                    <h3>Appointment Logs</h3>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>location</th>
-                                <th>bloodGroup</th>
-                                <th>status</th>
-                                <th>donationDate</th>
-                                <th>createdDate </th>
-                                <th>hospital</th>
+            <div>
+                <Link to='/donorPage' >
+                    Back to Donar page
+                </Link>
+                <h3>Appointment Logs</h3>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>location</th>
+                            <th>bloodGroup</th>
+                            <th>status</th>
+                            <th>donationDate</th>
+                            <th>createdDate </th>
+                            <th>hospital</th>
+                        </tr>
+                    </thead>
+
+                    {appointmentsLog.length && appointmentsLog.map((appointmentsLog2, index) => (
+
+
+                        <tbody>
+                            <tr key={appointmentsLog2._id}>
+                                <td >{index + 1}</td>
+                                <td>{appointmentsLog2.location}</td>
+                                <td>{appointmentsLog2.bloodGroup}</td>
+                                <td>{appointmentsLog2.status}</td>
+                                <td>{appointmentsLog2.donationDate.slice(0, 10)}</td>
+                                <td>{appointmentsLog2.createdDate.slice(0, 10)}</td>
+                                <td>{appointmentsLog2.hospital}</td>
+
+
+
+
                             </tr>
-                        </thead>
 
-                        {appointmentsLog.length && appointmentsLog.map((appointmentsLog2, index) => (
-
-
-                            <tbody>
-                                <tr key={appointmentsLog2._id}>
-                                    <td >{index + 1}</td>
-                                    <td>{appointmentsLog2.location}</td>
-                                    <td>{appointmentsLog2.bloodGroup}</td>
-                                    <td>{appointmentsLog2.status}</td>
-                                    <td>{appointmentsLog2.donationDate.slice(0, 10)}</td>
-                                    <td>{appointmentsLog2.createdDate.slice(0, 10)}</td>
-                                    <td>{appointmentsLog2.hospital}</td>
+                        </tbody>))}
+                </Table>
+            </div>
+            <div>
+                <h3>Donation Appointment Available Slots</h3>
+                {appointmentslots?.remainingAppointmentSlots}
+                <div style={{ margin: '15px' }}>
 
 
+                    {/*}  <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} /> */}
 
-
-                                </tr>
-
-                            </tbody>))}
-                    </Table>
+                    <input type='date' />
                 </div>
-                <div>
-                    <h3>Available Slots: {appointmentslots?.remainingAppointmentSlots}</h3>
-                    <button type="button" onClick={() => editAppointmentSlot(appointmentslots?.donationDate)} >Book slot for {appointmentslots?.donationDate}</button>
+
+
+                <button type="button" onClick={() => editAppointmentSlot(appointmentslots?.donationDate)} >Book new slot for {appointmentslots?.donationDate}</button>
                 <Button variant="success" onClick={newAppointment}>New Appointment</Button>
-               
+
                 <Modal show={modal} onHide={handleClose}>
-       <Modal.Header closeButton>
-          <Modal.Title>New Appointment</Modal.Title>
-        </Modal.Header>
-          <Modal.Body>
-          {/* <div className="mini-container">
-              <form>
-                  <div className="form-group">
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Appointment</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="mini-container">
+                            <form>
+                                {/*}          <div className="form-group">
 
-                  <span> Status </span>
-                  <Select
-                  options= {locationOptions.map(location.value === '')}
-                  onChange={handleLocation}
-                  placeholder="select status"
-                  />
+                                    <span> Status </span>
+                                    <Select
+                                        options={locationOptions.map(location.value === '')}
+                                        onChange={handleLocation}
+                                        placeholder="select status"
+                                    />
 
-                  </div>
-              <div className="form-group description-field">
-                        <span>Description:  </span>
-                        <textarea id="description" name="description" rows="4" col="50" value={description}
-                            onChange={(e => handleDescription(e))}
-                             />
-                    </div>
-              </form>
-              </div> */}
-          </Modal.Body>
-          <Modal.Footer>
-          {/* <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="success" onClick={saveAppointment}>
-            Save
-          </Button> */}
-        </Modal.Footer>
-       </Modal>
-      
-                </div>
+                                </div>
+                                <div className="form-group description-field">
+                                    <span>Description:  </span>
+                                    <textarea id="description" name="description" rows="4" col="50" value={description}
+                                        onChange={(e => handleDescription(e))}
+                                    />
+                    </div> */}
+                            </form>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="success" onClick={saveAppointment}>
+                            Save
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+            </div>
         </Fragment >
     )
 }

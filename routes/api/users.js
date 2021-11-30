@@ -474,7 +474,7 @@ router.post('/store/getAllDonorLog', auth, async (req, res) => {
             donationDate: {
                 $lte: date
 
-            }
+            }, createdByUser: { $ne: user.id }
         }).populate({ path: 'createdByUser', select: 'name email' }).sort('-donationDate');
         // let myReqs = await MyReq.find();
 
@@ -514,6 +514,7 @@ router.post('/store/updateMyRequest', auth, async (req, res) => {
         let store = await Store.findOne({ location });
         const hospital = store.hospital;
         var storeUpdated = false;
+        // console.log({ createdByUser, location, store });
 
 
         if (userRequestType == "STORE_BLOOD_REQ") {
@@ -604,9 +605,11 @@ router.post('/store/updateMyRequest', auth, async (req, res) => {
             const reqToUser = req.body.reqToUser; //Will hold Id.
             const bloodGroup = req.body.bloodGroup;
             const donationDate = req.body.donationDate;
+            const description = req.body.description;
+            // console.log({ createdByUser, reqToUser, location, donationDate, bloodGroup, status, hospital, userRequestType,description });
 
             myReq = new MyReq({
-                createdByUser, reqToUser, location, donationDate, bloodGroup, status, hospital, userRequestType
+                createdByUser, reqToUser, location, donationDate, bloodGroup, status, hospital, userRequestType, description
             });
             response = await myReq.save();
             res.json({ response });
@@ -691,22 +694,26 @@ router.post('/donor/updateMyRequestList', auth, async (req, res) => {
         const updatedDate = date;
 
         //console.log(id, updatedBy, updatedDate, status, description);
-        myReq = await MyReq.findOne({ id, userRequestType, status: "PENDING" }).populate({ path: 'createdByUser', select: 'name email' });
+        myReq = await MyReq.findOne({ id, userRequestType, status: "PENDING" }).populate({ path: 'createdByUser', select: 'name email' }).populate({ path: 'reqToUser', select: 'name email' });
         if (myReq != null) {
-
+            let responseApt = {};
             if ((status == "CONFIRM") || (status == "DECLINE")) {
                 myReq.status = status; // "status": "PENDING",//CONFIRM OR DECLINE
+                appointment = new Appointment({
+                    createdByUser: req.user.id, location: myReq.location, donationDate: myReq.donationDate, bloodGroup: myReq.bloodGroup, status, hospital: myReq.hospital
+                });
+                responseApt = await appointment.save();
             }
             myReq.description = description;
             myReq.updatedBy = updatedBy;
             myReq.updatedDate = updatedDate;
             response = await myReq.save();
-            // appointment = new Appointment({
-            //     createdByUser: req.user.id, location, donationDate, bloodGroup, status, hospital
-            // });
-            // response = await appointment.save();
-            res.json({ response });
-            res.json(response);
+            appointment = new Appointment({
+                createdByUser: req.user.id, location: myReq.location, donationDate: myReq.donationDate, bloodGroup: myReq.bloodGroup, status, hospital: myReq.hospital
+            });
+            responseApt = await appointment.save();
+            // res.json({ myReq });
+            res.json({ response, responseApt });
         } else {
             res.status(400).json({ errors: [{ msg: 'No requests found!' }] });
         }

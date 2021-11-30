@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { saveAdminRequest, fetchDonarData } from '../../actions/store';
+import { Link } from 'react-router-dom';
 import Select from 'react-select';
 import { Button, Modal, Table } from 'react-bootstrap';
+import moment from 'moment';
 import './donar.css';
 
-const StoreDonar = ({ actionSave, donorData, actionFetch}) => {
+const StoreDonar = ({ actionSave, donorData, actionFetch }) => {
     const locationOptions = [
         { value: 'MONTREAL', label: 'MONTREAL' },
         { value: 'OTTAWA', label: 'OTTAWA' },
@@ -20,13 +22,18 @@ const StoreDonar = ({ actionSave, donorData, actionFetch}) => {
         { value: 'O+', label: 'O+' },
         { value: 'O-', label: 'O-' }
     ]
+    let reqToUser1 = {};
     const [modal, setModal] = useState(false);
-    const [ location, setLocation] = useState('');
+    const [location, setLocation] = useState('');
     const [bloodGroup, setBloodGroup] = useState('');
-    const [ description, setDescription] = useState('');
+    const [description, setDescription] = useState('');
     const [selected, setSelectedItem] = useState('');
     const [defaultLocation, setDefaultLocation] = useState('');
-    const [defaultBloodGroup, setDefaultBloodGroup]= useState('');
+    const [defaultBloodGroup, setDefaultBloodGroup] = useState('');
+    const [defaultReqToUser, setDefaultReqToUser] = useState('');
+
+    const [reqToUser, setReqToUser] = useState('');
+    const [donationDate, setDonationDate] = useState('');
     const userRequestType = 'DONOR_BLOOD_REQ';
 
 
@@ -40,6 +47,10 @@ const StoreDonar = ({ actionSave, donorData, actionFetch}) => {
         setDescription(e.target.value)
     }
 
+    const handleReqToUser = (e) => {
+        setReqToUser(e.target.value)
+    }
+
     const handleLocation = (value) => {
         setLocation(value)
     }
@@ -50,11 +61,15 @@ const StoreDonar = ({ actionSave, donorData, actionFetch}) => {
     const openModal = (value) => {
         setModal(true);
         setSelectedItem(value)
+
         let data1 = locationOptions.filter(item => item.value === value.location)
         let new_data = bloodGroupOptions.filter(item => item.value === value.bloodGroup)
-    setDefaultLocation(data1)
-    setDefaultBloodGroup(new_data)
-    
+        let newReqToUser = value.reqToUser
+
+        setDefaultReqToUser(value.createdByUser._id)
+        setDefaultLocation(data1)
+        setDefaultBloodGroup(new_data)
+
     }
 
     const handleClose = () => {
@@ -62,121 +77,134 @@ const StoreDonar = ({ actionSave, donorData, actionFetch}) => {
     }
 
     const saveNewRequest = () => {
+
         const data = {}
+        console.log({ location })
         data.location = location.value
-        data.bloodGroup = bloodGroup.value
+        data.bloodGroup = bloodGroup.value// "A+"// 
         data.userRequestType = userRequestType
         data.description = description
+        data.donationDate = moment().format('YYYY-MM-DD');//
+        data.reqToUser = defaultReqToUser//Donar details
         actionSave(data);
         setModal(false)
     }
 
     return (
         <div>
-       
-       <Table bordered>
-<thead>
-    <tr>
-        <th>
-            ID 
-        </th>
-        <th>
-            Location
-        </th>
-        <th>
-            Hospital 
-        </th>
-        <th>
-            Status 
-        </th>
-        <th>
-            Blood Group
-        </th>
-        <th>
-            Donation Date
-        </th>
-        <th>
+            <Link to='/store' >
+                Back to store
+            </Link>
+            <h3 className="heading">Donor requests</h3>
 
-        </th>
-    </tr>
-</thead>
-<tbody>
-    { donorData.length && 
-    donorData.map((item, index) => (
-        <tr>
-            <td>{index+1}
-            </td>
-            <td>
-                {item.location}
-            </td>
-            <td>
-                {item.hospital}
-            </td>
-            <td>
-                {item.status}
-            </td>
-            <td>
-                {item.bloodGroup}
-            </td>
-            <td>
-                {item.donationDate}
-            </td>
-            <td>
-                <Button variant="success" className="saveBtn" onClick={() => openModal(item)}>New Request</Button>
-            </td>
+            <Table bordered>
+                <thead>
+                    <tr>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            Location
+                        </th>
+                        <th>
+                            Hospital
+                        </th>
 
-            </tr>
-    ))
-    }
-</tbody>
-        </Table>
+                        <th>
+                            Donated by User
+                        </th>
+                        <th>
+                            Blood Group
+                        </th>
+                        <th>
+                            Donation Date
+                        </th>
+                        <th>
 
-       <Modal show={modal} onHide={handleClose}>
-       <Modal.Header closeButton>
-          <Modal.Title>New Request</Modal.Title>'
-        </Modal.Header>
-          <Modal.Body>
-          <div className="mini-container">
-              <form>
-                  <div className="form-group">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {donorData.length &&
+                        donorData.map((item, index) => (
+                            <tr>
+                                <td>{index + 1}
+                                </td>
+                                <td>
+                                    {item.location}
+                                </td>
+                                <td>
+                                    {item.hospital}
+                                </td>
+                                <td>
+                                    {item.createdByUser.email}
+                                </td>
+                                <td>
+                                    {item.bloodGroup}
+                                </td>
+                                <td>
+                                    {item.donationDate.slice(0, 10)}
+                                </td>
+                                <td>
+                                    <Button variant="success" className="saveBtn" onClick={() => openModal(item)}>New Request</Button>
+                                </td>
 
-                  <span> Location </span>
-                  <Select
-                  options= {defaultLocation}
-                  defaultValue={defaultLocation[0]}
-                  onChange={handleLocation}
-                  placeholder="select location"
-                  />
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </Table>
 
-                  </div>
-    <div className="form-group">
-    <span> Blood Group </span>
-                  <Select
-                  options = { defaultBloodGroup }
-                  defaultValue={defaultBloodGroup[0]}
-                  onChange={handleBloodGroup}
-                  placeholder="select blood group"
-                  />
-                  </div>
-              <div className="form-group description-field">
-                        <span>Description:  </span>
-                        <textarea id="description" name="description" rows="4" col="50" value={description}
-                            onChange={(e => handleDescription(e))}
-                             />
+            <Modal show={modal} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>New Request</Modal.Title>'
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="mini-container">
+                        <form>
+                            <div className="form-group">
+
+                                <span> Location </span>
+                                <Select
+                                    options={defaultLocation}
+
+                                    onChange={handleLocation}
+                                    placeholder="select location"
+                                />
+
+                            </div>
+
+
+
+                            <div className="form-group">
+                                <span> Blood Group </span>
+                                <Select
+                                    options={defaultBloodGroup}
+
+                                    onChange={handleBloodGroup}
+                                    placeholder="select blood group"
+                                />
+                            </div>
+
+                            <div className="form-group description-field">
+                                <span>Description: </span>
+                                <textarea id="description" name="description" rows="4" col="50" value={description}
+                                    onChange={(e => handleDescription(e))}
+                                />
+                            </div>
+                        </form>
                     </div>
-              </form>
-              </div>
-          </Modal.Body>
-          <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="success" onClick={saveNewRequest}>
-            Save
-          </Button>
-        </Modal.Footer>
-       </Modal>
-        </div>
+                </Modal.Body >
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="success" onClick={saveNewRequest}>
+                        Save
+                    </Button>
+                </Modal.Footer>
+            </Modal >
+        </div >
     )
 }
 
@@ -187,7 +215,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     actionSave: (data) => {
         dispatch(saveAdminRequest(data))
-      },
+    },
     actionFetch: (data) => {
         dispatch(fetchDonarData(data))
     }

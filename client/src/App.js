@@ -16,6 +16,8 @@ import StorePage from './components/StorePage';
 import StoreAdmin from './components/store_admin/StoreAdmin';
 import StoreDonar from './components/store_donar/StoreDonar';
 
+import MyDetails from './components/auth/MyDetails'
+
 
 import './App.css'
 
@@ -49,6 +51,7 @@ const App = () => {
           <Alert />
           <Switch>
             <Route path="/" component={Landing} exact />
+            <Route path="/myDetails" component={MyDetails} />
 
             <Route path="/register" component={UserRegister} />
             <Route path="/login" component={UserLogin} />

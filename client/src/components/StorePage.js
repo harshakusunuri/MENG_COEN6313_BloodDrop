@@ -14,7 +14,8 @@ class StorePage extends Component {
             modal: false,
             location: '',
             bloodGroup: '',
-            userRequestType: 'STORE_BLOOD_REQ'
+            userRequestType: 'STORE_BLOOD_REQ',
+            donationDate: ''
         }
         this.locationOptions = [
             { value: 'MONTREAL', label: 'MONTREAL' },
@@ -42,6 +43,13 @@ class StorePage extends Component {
         actionFetch(data);
 
     }
+    componentDidUpdate() {
+        const { actionFetch } = this.props;
+        const data = {}
+        data.location = 'MONTREAL';
+        actionFetch(data);
+
+    }
 
     saveNewRequest = () => {
         const {
@@ -49,13 +57,14 @@ class StorePage extends Component {
             bloodGroup,
             userRequestType
         } = this.state;
-        const { actionSave } = this.props;
+        const { actionFetch, actionSave } = this.props;
         const data = {}
-        data.DonationDate = moment().format('YYYY-MM-DD');
+        data.donationDate = moment().format('YYYY-MM-DD');
         data.location = location.value;
         data.bloodGroup = bloodGroup.value;
         data.userRequestType = userRequestType;
         actionSave(data);
+        actionFetch(data);
         this.setState({ modal: false })
     }
 
@@ -198,12 +207,12 @@ class StorePage extends Component {
                     <div className="StoreMenu">
                         <span className="storeLink">
                             <Link to="/store_admin">
-                                Admin
+                                New Request for Admin
                             </Link>
                         </span>
                         <span className="storeLink2">
                             <Link to='/store_donar' >
-                                Donor
+                                Donor Search & Request window
                             </Link>
                         </span>
                     </div>

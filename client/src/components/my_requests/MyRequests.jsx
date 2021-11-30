@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Select from 'react-select';
+import axios from 'axios'
+
+import { Link } from 'react-router-dom';
 import { getMyRequests, editMyRequest } from '../../actions/my_request'
 
-const MyRequests = ({ actionFetch, actionEdit, data }) => {
+const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, history }) => {
     const statusOptions = [
         { value: 'CONFIRM', label: 'CONFIRM' },
         { value: 'DECLINE', label: 'DECLINE' },
@@ -13,12 +16,22 @@ const MyRequests = ({ actionFetch, actionEdit, data }) => {
     const [status, setStatus] = useState('')
     const [description, setDescription] = useState('')
     const [modal, setModal] = useState(false);
+    function sleep(ms) {
+        return new Promise(
+            resolve => setTimeout(resolve, ms)
+        );
+    }
 
     useEffect(() => {
-        const data = {}
-        data.userRequestType = 'DONOR_BLOOD_REQ'
-        data.status = 'PENDING'
-        actionFetch(data)
+        if (!isAuthenticated) {
+            history.push('/');
+
+        } else {
+            const data = {}
+            data.userRequestType = 'DONOR_BLOOD_REQ'
+            data.status = 'PENDING'
+            actionFetch(data)
+        }
     }, [])
 
     const editStatus = (item) => {
@@ -45,12 +58,20 @@ const MyRequests = ({ actionFetch, actionEdit, data }) => {
         data.description = description;
         actionEdit(data)
         setModal(false)
+        // var delayInMilliseconds = 1000;
+        // // setTimeout(function () {
+        // //     //your code to be executed after 1 second
+        // // }, delayInMilliseconds);
+
         actionFetch(data)
 
     }
 
     return (
         <>
+            <Link to='/donorPage' >
+                Back to Donar page
+            </Link>
             <Table bordered>
                 <thead>
                     <tr>
@@ -60,10 +81,13 @@ const MyRequests = ({ actionFetch, actionEdit, data }) => {
                         <th>
                             location
                         </th>
-                        <th>Hospital</th>
+
                         <th>Blood Group </th>
-                        <th>Status</th>
-                        <th></th>
+                        <th>Status</th><th>User Requset Type</th>
+                        <th>Created By</th>
+                        <th>Description</th>
+                        <th>Created Date</th>
+                        <th>Update option for Blood Donations</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,12 +97,16 @@ const MyRequests = ({ actionFetch, actionEdit, data }) => {
                                 {index + 1}
                             </td>
                             <td>{item.location} </td>
-                            <td>{item.hospital} </td>
+
                             <td>{item.bloodGroup} </td>
                             <td>{item.status}
                             </td>
+                            <td>{item.userRequestType} </td>
+                            <td>{item.createdByUser.email} </td>
+                            <td>{item.description} </td>
+                            <td>{item.createdDate.slice(0, 10)} </td>
                             <td>
-                                {item.status === 'PENDING' ?
+                                {item.status === 'PENDING' && (item.createdByUser._id != user._id) ?
                                     <>
                                         <Button variant="success" onClick={() => editStatus(item)}>
                                             Update</Button>
@@ -131,7 +159,10 @@ const MyRequests = ({ actionFetch, actionEdit, data }) => {
 }
 
 const mapStateToProps = state => ({
-    data: state.my_requests.myRequests
+    data: state.my_requests.myRequests,
+    user: state.auth.user,
+    isAuthenticated: state.auth.isAuthenticated,
+
 })
 
 const mapDispatchToProps = dispatch => ({
