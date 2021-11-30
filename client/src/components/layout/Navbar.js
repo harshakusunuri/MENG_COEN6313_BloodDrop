@@ -1,11 +1,15 @@
 import React, { Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { logout } from '../../actions/auth'
 import './navbar.css';
 
-const Navbar = ({ auth: { isAuthenticated }, logout }) => {
+const Navbar = ({ auth: { isAuthenticated }, logout, history }) => {
+    const handleLogout = () => {
+        logout();
+        history.push('/');
+    };
 
     const authLinks = (
         <ul>
@@ -22,7 +26,7 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
                     My Details</Link>
             </li>
             <li>
-                <a onClick={logout} >
+                <a onClick={handleLogout} >
                     <i className='fas fa-sign-out-alt' />{' '}
                     <span className='hide-sm'>Logout</span></a>
             </li>
@@ -87,4 +91,4 @@ Navbar.propTypes = {
 const mapStateToProps = (state) => ({
     auth: state.auth
 });
-export default connect(mapStateToProps, { logout })(Navbar)
+export default connect(mapStateToProps, { logout })(withRouter(Navbar))
