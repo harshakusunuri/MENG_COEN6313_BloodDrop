@@ -48,15 +48,15 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
     var bloodGroupUser = user.bloodGroup;
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            history.push('/');
+        // if (!isAuthenticated) {
+        //     history.push('/');
 
-        } else {
+        // } else {
 
 
-            getAppointmentsLog();
-            getAppointmentslots({ location: locationUser, donationDate: donationDateUser, bloodGroup: bloodGroupUser });
-        }
+        getAppointmentsLog();
+        getAppointmentslots({ location: locationUser, donationDate: donationDateUser, bloodGroup: bloodGroupUser });
+        // }
     }, [])
 
 
