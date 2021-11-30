@@ -10,7 +10,7 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
     const authLinks = (
         <ul>
             <li>
-                <Link to='/donorPage' >
+                <Link to='/donorAppointmentPage' >
                     Donor </Link>
             </li>
             <li>

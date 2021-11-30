@@ -16,6 +16,7 @@ import {
     ALL_APPOINTMENT_LOG_FAIL
 } from "../actions/types";
 
+import { toast } from 'react-toastify';
 const initialState = {
     // token: localStorage.getItem('token'),
     // isAuthenticated: null,
@@ -29,6 +30,15 @@ function userDataReducer(state = initialState, action) {
 
     switch (type) {
         case ALL_APPOINTMENT_LOG_SUCCESS:
+            toast.success('Successfully Fetched APPOINTMENT Data...', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
             return {
                 ...state,
                 // isAuthenticated: true,
@@ -37,6 +47,15 @@ function userDataReducer(state = initialState, action) {
             };
 
         case ALL_APPOINTMENT_LOG_FAIL:
+            toast.error('Failed to Fetch APPOINTMENT Data...', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
 
             return {
                 ...state,

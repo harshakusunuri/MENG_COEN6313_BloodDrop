@@ -6,10 +6,11 @@ import Select from 'react-select';
 import DatePicker from 'react-datepicker'
 import { Link, Navigate, Redirect } from 'react-router-dom'
 import { setAlert } from '../actions/alert'
-import { getAppointmentsLog, getAppointmentslots } from '../actions/auth'
+import { getAppointmentsLog, getAppointmentslots, updateAppointmentSlot } from '../actions/auth'
+import Moment from 'moment'
 
 
-const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, user, history, getAppointmentsLog, appointmentsLog, getAppointmentslots, loading }) => {
+const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, user, history, getAppointmentsLog, appointmentsLog, getAppointmentslots, loading, updateAppointmentSlot }) => {
     const locationOptions = [
         { value: 'MONTREAL', label: 'MONTREAL' },
         { value: 'OTTAWA', label: 'OTTAWA' },
@@ -20,8 +21,8 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
         donationDate: '',
         bloodGroup: ''
     })
-    
-        const bloodGroupOptions = [
+
+    const bloodGroupOptions = [
         { value: 'A+', label: 'A+' },
         { value: 'A-', label: 'A-' },
         { value: 'B+', label: 'B+' },
@@ -35,9 +36,16 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
     const [modal, setModal] = useState(false);
     const [editModel, setEditmodel] = useState(false)
     const { location, donationDate, bloodGroup } = formData;
+
+    const [location1, setLocation1] = useState('');
+
+    const [defaultBloodGroup, setDefaultBloodGroup] = useState('');
+
     var datetime = new Date();
     let donationDateUser = datetime.toISOString().slice(0, 10);
     //Page Load
+    var locationUser = user.location;
+    var bloodGroupUser = user.bloodGroup;
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -45,18 +53,23 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
 
         } else {
 
-            var locationUser = user.location;
-            var bloodGroupUser = user.bloodGroup;
+
             getAppointmentsLog();
             getAppointmentslots({ location: locationUser, donationDate: donationDateUser, bloodGroup: bloodGroupUser });
         }
     }, [])
 
+
+    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value })
     //search for other date & location
     const submitSearch = (e) => {
         e.preventDefault()
         getAppointmentslots({ location, donationDate, bloodGroup });
     }
+    const handleLocation = (value) => {
+        setLocation1(value)
+    }
+
 
     const editAppointmentSlot = (data) => {
         setEditmodel(true)
@@ -74,20 +87,134 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
 
     const newAppointment = () => {
         setModal(true)
+        // setSelectedItem(value)
+
+        // let data1 = locationOptions.filter(item => item.value === value.location)
+        let new_data = bloodGroupOptions.filter(item => item.value === user.bloodGroup)
+        setDefaultBloodGroup(new_data)
+
+        console.log(donationDate);
     }
 
     const saveAppointment = () => {
-        console.log("Save Appointment is called")
+
+        updateAppointmentSlot({
+            location: location1.value, donationDate: donationDateUser, bloodGroup: defaultBloodGroup[0].value
+        });
+        setModal(false)
+        getAppointmentsLog();
+        getAppointmentslots({ location: locationUser, donationDate: donationDateUser, bloodGroup: bloodGroupUser });
+        // console.log(location, donationDate, bloodGroup)
     }
 
     return (
         <Fragment>
             <div>
-                <Link to='/donorPage' >
-                    Back to Donar page
-                </Link>
+                <Link to='/myRequests' >
+                    View My Requests</Link>
+
+            </div>
+
+            <h3>Donation Appointment Slots</h3>
+
+
+            <div style={{ margin: '15px' }}>
+
+
+                {/*}  <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} /> */}
+
+
+
+                <div className="mini-container">
+
+                    {/*}    <input type='date' name="donationDate"
+                        value={donationDate}
+                        onChange={(e => onChange(e))}
+                        required />
+                    <span className="number">{Moment(donationDateUser).format('YYYY-MM-DD')}</span>
+                    <div className="form-group">
+
+                        <span> Location </span>
+                        <Select
+                            options={defaultLocation}
+
+                            onChange={handleLocation}
+                            placeholder="select location"
+                        />
+
+                    </div>
+
+
+
+                    <div className="form-group">
+                        <span> Blood Group </span>
+                        <Select
+                            options={defaultBloodGroup}
+
+                            onChange={handleBloodGroup}
+                            placeholder="select blood group"
+                        />
+                    </div>
+
+                    <div className="form-group description-field">
+                        <span>Description: </span>
+                        <textarea id="description" name="description" rows="4" col="50" value={description}
+                            onChange={(e => handleDescription(e))}
+                        />
+    </div> */}
+
+
+                    <div style={{ fontWeight: "bold" }}>Available slots for {donationDateUser} : {appointmentslots ? (appointmentslots.remainingAppointmentSlots >= 1 ? appointmentslots.remainingAppointmentSlots + " Slots" : "NOT AVAILABLE") : []}</div>
+                </div>
+
+
+                {/*} <button type="button" onClick={() => editAppointmentSlot(appointmentslots?.donationDate)} >Book new slot for {appointmentslots?.donationDate}</button> */}
+                {appointmentslots ? (appointmentslots.remainingAppointmentSlots >= 1 ? <Button variant="success" onClick={newAppointment}>New Appointment</Button> : []) : []}
+
+                <Modal show={modal} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Appointment</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="mini-container">
+                            <form>
+                                <div className="form-group">
+
+                                    <span> Location </span>
+                                    <Select
+                                        options={locationOptions}
+
+                                        onChange={handleLocation}
+                                        placeholder="select location"
+                                    />
+
+                                </div>
+
+
+                                <div className="form-group">
+                                    <span> Blood Group </span>
+
+                                    <Select
+                                        options={defaultBloodGroup}
+                                        defaultValue={defaultBloodGroup[0]}
+
+                                        placeholder="select blood group"
+                                    />
+                                </div>
+                            </form>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="success" onClick={saveAppointment}>
+                            Save
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 <h3>Appointment Logs</h3>
-                <Table striped bordered hover>
+                <Table striped bordered hover className="my-4">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -100,7 +227,7 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
                         </tr>
                     </thead>
 
-                    {appointmentsLog.length && appointmentsLog.map((appointmentsLog2, index) => (
+                    {appointmentsLog.length > 0 ? appointmentsLog.map((appointmentsLog2, index) => (
 
 
                         <tbody>
@@ -118,59 +245,8 @@ const DonorAppointmentPage = ({ setAlert, appointmentslots, isAuthenticated, use
 
                             </tr>
 
-                        </tbody>))}
+                        </tbody>)) : <tbody><tr className="my-4"> "No Records found" </tr></tbody>}
                 </Table>
-            </div>
-            <div>
-                <h3>Donation Appointment Available Slots</h3>
-                {appointmentslots?.remainingAppointmentSlots}
-                <div style={{ margin: '15px' }}>
-
-
-                    {/*}  <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} /> */}
-
-                    <input type='date' />
-                </div>
-
-
-                <button type="button" onClick={() => editAppointmentSlot(appointmentslots?.donationDate)} >Book new slot for {appointmentslots?.donationDate}</button>
-                <Button variant="success" onClick={newAppointment}>New Appointment</Button>
-
-                <Modal show={modal} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>New Appointment</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="mini-container">
-                            <form>
-                                {/*}          <div className="form-group">
-
-                                    <span> Status </span>
-                                    <Select
-                                        options={locationOptions.map(location.value === '')}
-                                        onChange={handleLocation}
-                                        placeholder="select status"
-                                    />
-
-                                </div>
-                                <div className="form-group description-field">
-                                    <span>Description:  </span>
-                                    <textarea id="description" name="description" rows="4" col="50" value={description}
-                                        onChange={(e => handleDescription(e))}
-                                    />
-                    </div> */}
-                            </form>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close
-                        </Button>
-                        <Button variant="success" onClick={saveAppointment}>
-                            Save
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
 
             </div>
         </Fragment >
@@ -192,9 +268,10 @@ DonorAppointmentPage.propTypes = {
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
     loading: state.loading,
-    appointmentsLog: state.userData.appointmentsLog,
+    appointmentsLog: state.auth.appointmentsLog,
     user: state.auth.user,
     appointmentslots: state.auth.appointmentslots
 
 });
-export default connect(mapStateToProps, { setAlert, getAppointmentsLog, getAppointmentslots })(DonorAppointmentPage)
+
+export default connect(mapStateToProps, { setAlert, getAppointmentsLog, getAppointmentslots, updateAppointmentSlot })(DonorAppointmentPage)

@@ -1,15 +1,18 @@
 import {
     USER_REGISTER_SUCCESS, USER_REGISTER_FAIL, USER_LOADED, AUTH_ERROR, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, LOGOUT, ALL_APPOINTMENT_LOG_SUCCESS,
-    ALL_APPOINTMENT_LOG_FAIL, APPOINTMENT_SLOTS_SUCCESS, APPOINTMENT_SLOTS_FAIL
+    ALL_APPOINTMENT_LOG_FAIL, APPOINTMENT_SLOTS_SUCCESS, APPOINTMENT_SLOTS_FAIL, APPOINTMENT_UPDATE_SLOT_SUCCESS, APPOINTMENT_UPDATE_SLOT_FAIL
 } from "../actions/types";
+
+import { toast } from 'react-toastify';
 
 const initialState = {
     token: localStorage.getItem('token'),
     isAuthenticated: null,
     loading: true,
     user: null,
-    appointmentsLog: null,
-    appointmentslots: null
+
+    appointmentslots: [],
+    appointmentsLog: []
 
 }
 
@@ -32,6 +35,12 @@ function authReducer(state = initialState, action) {
                 loading: false,
                 appointmentsLog: payload.appointmentsLog
             };
+        case ALL_APPOINTMENT_LOG_FAIL:
+            return {
+                ...state,
+                loading: false,
+            }
+
         case APPOINTMENT_SLOTS_SUCCESS:
             return {
                 ...state,
@@ -46,7 +55,34 @@ function authReducer(state = initialState, action) {
                 loading: false,
                 appointmentslots: null
             };
-
+        case APPOINTMENT_UPDATE_SLOT_SUCCESS:
+            toast.success("Successfully booked Appointment Slot", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
+            return {
+                ...state,
+                loading: false,
+            }
+        case APPOINTMENT_UPDATE_SLOT_FAIL:
+            toast.error("Failed to book Appointment Slot", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
+            return {
+                ...state,
+                loading: false,
+            }
 
         case USER_REGISTER_SUCCESS:
         case USER_LOGIN_SUCCESS:
@@ -58,7 +94,7 @@ function authReducer(state = initialState, action) {
         case AUTH_ERROR:
         case USER_LOGIN_FAIL:
         case LOGOUT:
-        case ALL_APPOINTMENT_LOG_FAIL:
+
             localStorage.removeItem('token');
             return {
                 ...state,
@@ -66,7 +102,7 @@ function authReducer(state = initialState, action) {
                 isAuthenticated: false,
                 loading: false,
                 user: null,
-                appointmentsLog: null
+                appointmentsLog: []
             };
 
         default:

@@ -16,7 +16,9 @@ import {
     LOGOUT,
     ALL_APPOINTMENT_LOG_SUCCESS,
     ALL_APPOINTMENT_LOG_FAIL,
-    APPOINTMENT_SLOTS_SUCCESS, APPOINTMENT_SLOTS_FAIL
+    APPOINTMENT_SLOTS_SUCCESS, APPOINTMENT_SLOTS_FAIL,
+    APPOINTMENT_UPDATE_SLOT_SUCCESS,
+    APPOINTMENT_UPDATE_SLOT_FAIL
 } from './types';
 
 /*
@@ -183,6 +185,42 @@ export const getAppointmentslots = (location, donationDate, bloodGroup) => async
 
         dispatch({
             type: APPOINTMENT_SLOTS_FAIL
+        });
+    }
+};
+
+// GET Appointment slots
+export const updateAppointmentSlot = (location, donationDate, bloodGroup) => async (dispatch) => {
+
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    try {
+        // const formData = { location, donationDate, bloodGroup };
+        // const body = JSON.stringify(formData);
+
+        const res = await axios.post('/api/users/donor/updateAppointment', location, donationDate, bloodGroup, config);
+
+
+        dispatch({
+            type: APPOINTMENT_UPDATE_SLOT_SUCCESS,
+            payload: res.data
+        });
+
+
+    } catch (err) {
+        const errors = err.response.data.errors;
+
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+        }
+
+        dispatch({
+            type: APPOINTMENT_UPDATE_SLOT_FAIL
         });
     }
 };

@@ -7,7 +7,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom';
 import { getMyRequests, editMyRequest } from '../../actions/my_request'
 
-const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, history }) => {
+const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, history, setAlert }) => {
     const statusOptions = [
         { value: 'CONFIRM', label: 'CONFIRM' },
         { value: 'DECLINE', label: 'DECLINE' },
@@ -69,9 +69,10 @@ const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, hist
 
     return (
         <>
-            <Link to='/donorPage' >
-                Back to Donar page
-            </Link>
+
+            <Link to='/donorAppointmentPage' >
+                Back to Donor Page </Link>
+
             <Table bordered>
                 <thead>
                     <tr>
@@ -162,6 +163,7 @@ const mapStateToProps = state => ({
     data: state.my_requests.myRequests,
     user: state.auth.user,
     isAuthenticated: state.auth.isAuthenticated,
+
 
 })
 

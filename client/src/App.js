@@ -22,7 +22,8 @@ import MyDetails from './components/auth/MyDetails'
 import './App.css'
 
 import Alert from './components/layout/Alert';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 //Redux 
 import { Provider } from 'react-redux'
 import store from './store'
@@ -45,6 +46,7 @@ const App = () => {
   return (
 
     <Provider store={store}>
+      <ToastContainer />
       <Router>
         <Navbar style={{ display: "Block" }} />
         <Container>

@@ -6,6 +6,6 @@ import my_requests from './my_requests';
 import userData from './userData'
 
 export default combineReducers({
-    
-    alert, auth, store, userData, my_requests
+
+    alert, auth, store, my_requests
 });

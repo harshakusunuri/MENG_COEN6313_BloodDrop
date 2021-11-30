@@ -44,6 +44,8 @@ router.post('/userRegister', [
     const { name, email, password, location, bloodGroup, userType, adminAccess, organizationName } = req.body;
     try {
         let user = await User.findOne({ email });
+        let locationUppercase = location.toUpperCase();
+        // console.log(locationUppercase);
 
         if (user) {
             res.status(400).json({ errors: [{ msg: 'User already exists' }] })
@@ -57,7 +59,7 @@ router.post('/userRegister', [
             })
             if ((userType == "USER") || (userType == "ORG" || userType == "ADMIN")) {
                 user = new User({
-                    name, email, avatar, password, location, bloodGroup, userType, adminAccess, organizationName
+                    name, email, avatar, password, location: locationUppercase, bloodGroup, userType, adminAccess, organizationName
                 });
 
                 //Encrypt password
@@ -454,9 +456,10 @@ router.post('/store/getAllDonorLog', auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     try {
         var datetime = new Date();
+        datetime = datetime.toISOString().slice(0, 10);
 
-        datetime.setMonth(datetime.getMonth() - 3);
-        var date = datetime.toISOString().slice(0, 10);
+        // datetime.setMonth(datetime.getMonth() - 3);
+        // var date = datetime.toISOString().slice(0, 10);
         //console.log(date);
         // console.log(donationDate);
         // var monthsDiff = timediff(donationDate, currentDate, 'M');
@@ -472,7 +475,7 @@ router.post('/store/getAllDonorLog', auth, async (req, res) => {
 
         let appointments = await Appointment.find({ //query date of 3 months prior
             donationDate: {
-                $lte: date
+                $lte: datetime
 
             }, createdByUser: { $ne: user.id }
         }).populate({ path: 'createdByUser', select: 'name email' }).sort('-donationDate');

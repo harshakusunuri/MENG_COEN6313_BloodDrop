@@ -43,13 +43,7 @@ class StorePage extends Component {
         actionFetch(data);
 
     }
-    componentDidUpdate() {
-        const { actionFetch } = this.props;
-        const data = {}
-        data.location = 'MONTREAL';
-        actionFetch(data);
 
-    }
 
     saveNewRequest = () => {
         const {
@@ -89,7 +83,21 @@ class StorePage extends Component {
 
         return (
             <div><h3>Store</h3>
-                <Table bordered>
+                <div className="StoreMenu">
+
+                    <span className="storeLink">
+                        <Link to="/store_admin">
+                            Create a New Request to Admin
+                        </Link>
+                    </span>
+                    <div className="VS" />
+                    <span className="storeLink2">
+                        <Link to='/store_donar' >
+                            Donor Search & blood Request window
+                        </Link>
+                    </span>
+                </div>
+                <Table bordered className="my-4">
                     <thead>
                         <tr>
                             <th>
@@ -204,18 +212,7 @@ class StorePage extends Component {
                             </Button>
                         </Modal.Footer>
                     </Modal>
-                    <div className="StoreMenu">
-                        <span className="storeLink">
-                            <Link to="/store_admin">
-                                New Request for Admin
-                            </Link>
-                        </span>
-                        <span className="storeLink2">
-                            <Link to='/store_donar' >
-                                Donor Search & Request window
-                            </Link>
-                        </span>
-                    </div>
+
                 </footer>
             </div >
         )

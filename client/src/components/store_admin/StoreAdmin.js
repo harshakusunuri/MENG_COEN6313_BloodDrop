@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+
 import Select from 'react-select';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { saveAdminRequest } from '../../actions/store';
-import { Button, Card } from 'react-bootstrap';
+
+
+import { Button, Modal, Table, Card } from 'react-bootstrap';
 import moment from 'moment';
 import styles from './admin.css';
 
-const StoreAdmin = ({ actionSave }) => {
+const StoreAdmin = ({ actionSave, history }) => {
     const locationOptions = [
         { value: 'MONTREAL', label: 'MONTREAL' },
         { value: 'OTTAWA', label: 'OTTAWA' },
@@ -52,14 +55,20 @@ const StoreAdmin = ({ actionSave }) => {
         data.donationDate = moment().format('YYYY-MM-DD');//DonationDate
         actionSave(data)
     }
+    const Close = () => {
+        history.push("/store");
+
+    }
+
 
     return (
         <>
-            <Card className="card">
+            <Link to='/store' >
+                Back to store
+            </Link>
+            <Card className="card my-4 " style={{}}>
                 <span className="storeLink2">
-                    <Link to='/store' >
-                        Back to store
-                    </Link>
+
                 </span>
                 <h3 className="heading">New Admin Request</h3>
 
@@ -91,7 +100,12 @@ const StoreAdmin = ({ actionSave }) => {
                         </div>
                     </form>
                 </div>
-                <Button variant="success" className="saveBtn" onClick={Save}>Save</Button>{' '}
+                <div style={{ display: "flex", justifyContent: "space-evenly", margin: "0px 10px 10px 10px" }}><Button variant="secondary" onClick={Close}>
+                    Close
+                </Button>
+                    <Button variant="success" onClick={Save}>
+                        Save
+                    </Button></div>
             </Card>
         </>
     )
@@ -103,4 +117,4 @@ const mapDispatchToProps = dispatch => ({
     }
 })
 
-export default connect(null, mapDispatchToProps)(StoreAdmin)
+export default connect(null, mapDispatchToProps)(withRouter(StoreAdmin))
