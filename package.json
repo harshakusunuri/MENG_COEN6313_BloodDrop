@@ -12,6 +12,10 @@
   },
   "author": "",
   "license": "ISC",
+   "engines": {
+    "node": "16",
+    "npm":"8"
+  },
   "dependencies": {
 
     "axios": "^0.21.0",
