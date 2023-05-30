@@ -29,14 +29,14 @@ app.use('/api/auth/', require('./routes/api/auth'));
 console.log("Crossed routes & at Statics assignment");
 
 //Underneat APIs: Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-    // Set static folder
-    app.use(express.static('client/build'));
+// if (process.env.NODE_ENV === 'production') {
+// Set static folder
+app.use(express.static('client/build'));
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-    });
-} //Testing for local running of instance
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+});
+// } //Testing for local running of instance
 
 console.log("Passed Static assests");
 
