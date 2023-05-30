@@ -10,15 +10,19 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
+  "engines": {
+    "node": "16",
+    "npm": "8"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
-
     "axios": "^0.21.0",
     "bcrypt": "^5.0.1",
     "client": "file:client",
     "config": "^3.3.6",
     "cors": "^2.8.5",
+    "dotenv": "^16.1.0",
     "express": "^4.17.1",
     "express-validator": "^6.13.0",
     "gravatar": "^1.8.2",
