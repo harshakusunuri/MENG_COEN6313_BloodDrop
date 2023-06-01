@@ -468,11 +468,10 @@ router.post('/store/getAllDonorLog', auth, async (req, res) => {
     const user = await User.findById(req.user.id);
     try {
         var datetime = new Date();
+        datetime.setMonth(datetime.getMonth() - 3);
         datetime = datetime.toISOString().slice(0, 10);
 
-        // datetime.setMonth(datetime.getMonth() - 3);
-        // var date = datetime.toISOString().slice(0, 10);
-        //console.log(date);
+        // console.log(datetime);
         // console.log(donationDate);
         // var monthsDiff = timediff(donationDate, currentDate, 'M');
 

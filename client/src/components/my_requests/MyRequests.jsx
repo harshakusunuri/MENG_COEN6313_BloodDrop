@@ -84,7 +84,8 @@ const MyRequests = ({ actionFetch, actionEdit, data, isAuthenticated, user, hist
                         </th>
 
                         <th>Blood Group </th>
-                        <th>Status</th><th>User Requset Type</th>
+                        <th style={{ 'color': 'orange' }} >Status</th>
+                        <th>User Requset Type</th>
                         <th>Created By</th>
                         <th>Description</th>
                         <th>Created Date</th>

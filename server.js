@@ -36,6 +36,7 @@ if (process.env.NODE_ENV === 'production') {
     app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
+    console.log("Using Build version fron Client Build module");
 } //Testing for local running of instance
 
 console.log("Passed Static assests");

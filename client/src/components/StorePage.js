@@ -79,6 +79,7 @@ class StorePage extends Component {
     render() {
         const { blood } = this.props;
         const { modal } = this.state;
+        const date = new Date().toUTCString().slice(5, 16);
 
 
         return (
@@ -113,7 +114,7 @@ class StorePage extends Component {
                                 Blood Group
                             </th>
                             <th>
-
+                                Date: {date}
                             </th>
                         </tr>
                     </thead>
